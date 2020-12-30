@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>阿里云磁盘在线扩容 | 球小嘟</title><meta name="keywords" content="运维"><meta name="author" content="球小嘟"><meta name="copyright" content="球小嘟"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="主要的操作步骤参考：阿里云官方文档   扩展已有MBR分区 说明 为了防止数据丢失，不建议扩容已挂载的分区和文件系统。请先取消挂载（umount）分区，完成扩容并正常使用后，重新挂载（mount）。针对不同的Linux内核版本，推荐以下操作方式：实例内核版本 &lt; 3.6：先取消挂载该分区，再修改分区表，最后扩容文件系统。实例内核版本 ≥ 3.6：先修改对应分区表，再通知内核更新分区表，最后扩">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里云磁盘在线扩容">
+<meta property="og:url" content="http://qiuxiaodu.github.io/posts/fba8c39.html">
+<meta property="og:site_name" content="球小嘟">
+<meta property="og:description" content="主要的操作步骤参考：阿里云官方文档   扩展已有MBR分区 说明 为了防止数据丢失，不建议扩容已挂载的分区和文件系统。请先取消挂载（umount）分区，完成扩容并正常使用后，重新挂载（mount）。针对不同的Linux内核版本，推荐以下操作方式：实例内核版本 &lt; 3.6：先取消挂载该分区，再修改分区表，最后扩容文件系统。实例内核版本 ≥ 3.6：先修改对应分区表，再通知内核更新分区表，最后扩">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/10/28/JQGfks9qu3RFIED.jpg">
+<meta property="article:published_time" content="2020-03-05T15:15:27.000Z">
+<meta property="article:modified_time" content="2020-10-28T15:15:27.000Z">
+<meta property="article:author" content="球小嘟">
+<meta property="article:tag" content="运维">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/10/28/JQGfks9qu3RFIED.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://qiuxiaodu.github.io/posts/fba8c39.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '5.2.0',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2020-10-28 15:15:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/dudu.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">23</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">17</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">19</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 图库</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E5%B7%B2%E6%9C%89MBR%E5%88%86%E5%8C%BA"><span class="toc-number">1.</span> <span class="toc-text">扩展已有MBR分区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA%E8%A1%A8"><span class="toc-number">1.1.</span> <span class="toc-text">修改分区表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%9B%98%E7%9A%84%E6%8C%82%E8%BD%BD%E8%B7%AF%E5%BE%84%EF%BC%8C%E6%A0%B9%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%9A%84%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E5%8D%B8%E8%BD%BD%E5%88%86%E5%8C%BA%EF%BC%8C%E7%9B%B4%E8%87%B3%E5%AE%8C%E5%85%A8%E5%8D%B8%E8%BD%BD%E5%B7%B2%E6%8C%82%E8%BD%BD%E7%9A%84%E5%88%86%E5%8C%BA%E3%80%82%EF%BC%88%E4%B8%8D%E9%9C%80%E8%A6%81%E5%81%9A%EF%BC%8C%E7%9B%B4%E6%8E%A5%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">查看数据盘的挂载路径，根据返回的文件路径卸载分区，直至完全卸载已挂载的分区。（不需要做，直接第三步）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8fdisk%E5%B7%A5%E5%85%B7%E5%88%A0%E9%99%A4%E6%97%A7%E5%88%86%E5%8C%BA%E3%80%82"><span class="toc-number">1.3.</span> <span class="toc-text">使用fdisk工具删除旧分区。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8fdisk%E5%91%BD%E4%BB%A4%E6%96%B0%E5%BB%BA%E5%88%86%E5%8C%BA%E3%80%82"><span class="toc-number">1.4.</span> <span class="toc-text">使用fdisk命令新建分区。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.5.</span> <span class="toc-text">扩容文件系统</span></a></li></ol></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/10/28/JQGfks9qu3RFIED.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">球小嘟</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 图库</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">阿里云磁盘在线扩容</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-03-05T15:15:27.000Z" title="发表于 2020-03-05 15:15:27">2020-03-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-10-28T15:15:27.000Z" title="更新于 2020-10-28 15:15:27">2020-10-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BF%90%E7%BB%B4/%E9%98%BF%E9%87%8C%E4%BA%91/">阿里云</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><p>主要的操作步骤参考：<a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/25452.html?spm=a2c4g.11186623.2.25.fc254656s13thG#concept-z11-xsh-ydb">阿里云官方文档</a>  </p>
+<h2 id="扩展已有MBR分区"><a href="#扩展已有MBR分区" class="headerlink" title="扩展已有MBR分区"></a>扩展已有MBR分区</h2><blockquote>
+<p>说明 为了防止数据丢失，不建议扩容已挂载的分区和文件系统。请先取消挂载（umount）分区，完成扩容并正常使用后，重新挂载（mount）。针对不同的Linux内核版本，推荐以下操作方式：<br>实例内核版本 &lt; 3.6：先取消挂载该分区，再修改分区表，最后扩容文件系统。<br>实例内核版本 ≥ 3.6：先修改对应分区表，再通知内核更新分区表，最后扩容文件系统。  </p>
+</blockquote>
+<p>由于centos7的内核版本为3.10大于3.6所有支持在线扩容，无需卸载磁盘，无需重启实例</p>
+<p>如果新增空间用于扩容已有的MBR分区，按照以下步骤在实例中完成扩容：  </p>
+<h3 id="修改分区表"><a href="#修改分区表" class="headerlink" title="修改分区表"></a>修改分区表</h3><p>运行<code>fdisk -lu /dev/vdb</code>，并记录旧分区的起始和结束的扇区位置。本示例中，<code>/dev/vdb1</code>的起始扇区是2048，结束扇区是<code>41943039</code>。  </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@ecshost ~]<span class="comment"># fdisk -lu /dev/vdb</span></span><br><span class="line">Disk /dev/vdb: 42.9 GB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label <span class="built_in">type</span>: dos</span><br><span class="line">Disk identifier: 0x9277b47b</span><br><span class="line"></span><br><span class="line">Device Boot Start End Blocks Id System</span><br><span class="line">/dev/vdb1 2048 41943039 20970496 83 Linux</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看数据盘的挂载路径，根据返回的文件路径卸载分区，直至完全卸载已挂载的分区。（不需要做，直接第三步）"><a href="#查看数据盘的挂载路径，根据返回的文件路径卸载分区，直至完全卸载已挂载的分区。（不需要做，直接第三步）" class="headerlink" title="查看数据盘的挂载路径，根据返回的文件路径卸载分区，直至完全卸载已挂载的分区。（不需要做，直接第三步）"></a>查看数据盘的挂载路径，根据返回的文件路径卸载分区，直至完全卸载已挂载的分区。（不需要做，直接第三步）</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@ecshost ~]<span class="comment"># mount | grep &quot;/dev/vdb&quot;</span></span><br><span class="line">/dev/vdb1 on /mnt <span class="built_in">type</span> ext4 (rw,relatime,data=ordered)</span><br><span class="line">[root@ecshost ~]<span class="comment"># umount /dev/vdb1</span></span><br><span class="line">[root@ecshost ~]<span class="comment"># mount | grep &quot;/dev/vdb&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用fdisk工具删除旧分区。"><a href="#使用fdisk工具删除旧分区。" class="headerlink" title="使用fdisk工具删除旧分区。"></a>使用fdisk工具删除旧分区。</h3><p>运行<code>fdisk -u /dev/vdb</code>：分区数据盘。<br>输入p：打印分区表。<br>输入d：删除分区。<br>输入p：确认分区已删除。<br>输入w：保存修改并退出。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@ecshost ~]<span class="comment"># fdisk -u /dev/vdb</span></span><br><span class="line">Welcome to fdisk (util-linux 2.23.2).</span><br><span class="line">Changes will remain <span class="keyword">in</span> memory only, until you decide to write them.</span><br><span class="line">Be careful before using the write <span class="built_in">command</span>.</span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): p</span><br><span class="line">Disk /dev/vdb: 42.9 GB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label <span class="built_in">type</span>: dos</span><br><span class="line">Disk identifier: 0x9277b47b</span><br><span class="line">Device Boot Start End Blocks Id System</span><br><span class="line">/dev/vdb1 2048 41943039 20970496 83 Linux</span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): d</span><br><span class="line">Selected partition 1</span><br><span class="line">Partition 1 is deleted</span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): p</span><br><span class="line">Disk /dev/vdb: 42.9 GB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label <span class="built_in">type</span>: dos</span><br><span class="line">Disk identifier: 0x9277b47b</span><br><span class="line">Device Boot Start End Blocks Id System</span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): w</span><br><span class="line">The partition table has been altered!</span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line">WARNING: Re-reading the partition table failed with error 16: Device or resource busy.</span><br><span class="line">The kernel still uses the old table. The new table will be used at</span><br><span class="line">the next reboot or after you run partprobe(8) or kpartx(8)</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<h3 id="使用fdisk命令新建分区。"><a href="#使用fdisk命令新建分区。" class="headerlink" title="使用fdisk命令新建分区。"></a>使用fdisk命令新建分区。</h3><p>运行<code>fdisk -u /dev/vdb</code>：分区数据盘。<br>输入p：打印分区表。<br>输入n：新建分区。<br>输入p：选择分区类型为主分区。<br>输入&lt;分区号&gt;：选择分区号。本示例选取了1。警告 新分区的起始位置必须和旧分区的起始位置相同，结束位置必须大于旧分区的结束位置，否则会导致扩容失败。<br>输入w：保存修改并退出。<br>本示例中，将/dev/vdb1由20 GiB扩容到40 GiB。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@ecshost ~]<span class="comment"># fdisk -u /dev/vdb</span></span><br><span class="line">Welcome to fdisk (util-linux 2.23.2).</span><br><span class="line">Changes will remain <span class="keyword">in</span> memory only, until you decide to write them.</span><br><span class="line">Be careful before using the write <span class="built_in">command</span>.</span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): p</span><br><span class="line">Disk /dev/vdb: 42.9 GB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label <span class="built_in">type</span>: dos</span><br><span class="line">Disk identifier: 0x9277b47b</span><br><span class="line">Device Boot Start End Blocks Id System</span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): n</span><br><span class="line">Partition <span class="built_in">type</span>:</span><br><span class="line">p primary (0 primary, 0 extended, 4 free)</span><br><span class="line">e extended</span><br><span class="line">Select (default p): p</span><br><span class="line">Partition number (1-4, default 1): 1</span><br><span class="line">First sector (2048-83886079, default 2048):</span><br><span class="line">Using default value 2048</span><br><span class="line">Last sector, +sectors or +size&#123;K,M,G&#125; (2048-83886079, default 83886079):</span><br><span class="line">Partition 1 of <span class="built_in">type</span> Linux and of size 30 GiB is <span class="built_in">set</span></span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): p</span><br><span class="line">Disk /dev/vdb: 42.9 GB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label <span class="built_in">type</span>: dos</span><br><span class="line">Disk identifier: 0x9277b47b</span><br><span class="line">Device Boot Start End Blocks Id System</span><br><span class="line">/dev/vdb1 2048 62916607 31457280 83 Linux</span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): w</span><br><span class="line">The partition table has been altered!</span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<p>运行<code>lsblk /dev/vdb</code>确保分区表已经增加。<br>运行<code>e2fsck -n /dev/vdb1</code>再次检查文件系统，确认扩容分区后的文件系统状态为<code>clean</code>。<br>通知内核更新分区表。运行<code>partprobe &lt;dst_dev_path&gt;</code>或者<code>partx -u &lt;dst_dev_path&gt;</code>（使用这个）示例：<code>partx -u /dev/vdc</code>，以通知内核数据盘的分区表已经修改，需要同步更新。  </p>
+<h3 id="扩容文件系统"><a href="#扩容文件系统" class="headerlink" title="扩容文件系统"></a>扩容文件系统</h3><p>ext*文件系统（例如ext3和ext4）：运行<code>resize2fs /dev/vdb1</code>并重新挂载分区（不需要重新挂载分区）。  </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@ecshost ~]<span class="comment"># resize2fs /dev/vdb1</span></span><br><span class="line">resize2fs 1.42.9 (28-Dec-2013)</span><br><span class="line">Resizing the filesystem on /dev/vdb1 to 7864320 (4k) blocks.</span><br><span class="line">The filesystem on /dev/vdb1 is now 7864320 blocks long.</span><br><span class="line">[root@ecshost ~]<span class="comment"># mount /dev/vdb1 /mnt</span></span><br></pre></td></tr></table></figure></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">球小嘟</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://qiuxiaodu.github.io/posts/fba8c39.html">http://qiuxiaodu.github.io/posts/fba8c39.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://qiuxiaodu.github.io" target="_blank">球小嘟</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BF%90%E7%BB%B4/">运维</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/10/28/JQGfks9qu3RFIED.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/posts/b8f4bd70.html"><img class="prev-cover" src="https://pic2.zhimg.com/80/v2-6890485c84748900d9dae824b7f7cbb1_720w.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Hexo博客搭建</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/27388375.html" title="运维规范"><img class="cover" src="https://i.loli.net/2020/10/27/mpnSVTNM2HLlOyc.png"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-27</div><div class="title">运维规范</div></div></a></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 球小嘟</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://qiuxiaodu.github.io/">blog</a>!</div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script></div></body></html>

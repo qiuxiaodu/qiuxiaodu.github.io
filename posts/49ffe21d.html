@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vagrant使用 | 球小嘟</title><meta name="keywords" content="vagrant"><meta name="author" content="球小嘟"><meta name="copyright" content="球小嘟"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Vagrant需要一个虚拟化平台才能工作。虽然它支持多种虚拟化平台，但是推荐VirtualBox。  VirtualBox在VirtualBox官网上选择合适的下载安装即可，这里我选择的是VirtualBox 6.1.16 platform packages Windows hosts Vagrant在Vagrant官网上选择合适的版本下载安装即可，这里我选择的是Windows 64-bit 验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vagrant使用">
+<meta property="og:url" content="http://qiuxiaodu.github.io/posts/49ffe21d.html">
+<meta property="og:site_name" content="球小嘟">
+<meta property="og:description" content="Vagrant需要一个虚拟化平台才能工作。虽然它支持多种虚拟化平台，但是推荐VirtualBox。  VirtualBox在VirtualBox官网上选择合适的下载安装即可，这里我选择的是VirtualBox 6.1.16 platform packages Windows hosts Vagrant在Vagrant官网上选择合适的版本下载安装即可，这里我选择的是Windows 64-bit 验">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/11/01/sOZdR4rBl9nVY8j.png">
+<meta property="article:published_time" content="2020-11-01T13:46:18.000Z">
+<meta property="article:modified_time" content="2020-11-01T13:46:18.000Z">
+<meta property="article:author" content="球小嘟">
+<meta property="article:tag" content="vagrant">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/11/01/sOZdR4rBl9nVY8j.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://qiuxiaodu.github.io/posts/49ffe21d.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '5.2.0',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2020-11-01 13:46:18'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/dudu.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">23</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">17</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">19</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 图库</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#VirtualBox"><span class="toc-number">1.</span> <span class="toc-text">VirtualBox</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vagrant"><span class="toc-number">2.</span> <span class="toc-text">Vagrant</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%AF%BC%E5%85%A5"><span class="toc-number">3.</span> <span class="toc-text">本地导入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%82%E8%BD%BD%E6%9C%AC%E5%9C%B0%E7%9B%AE%E5%BD%95%E5%88%B0Vagrant%E9%95%9C%E5%83%8F"><span class="toc-number">4.</span> <span class="toc-text">挂载本地目录到Vagrant镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85LNMP"><span class="toc-number">5.</span> <span class="toc-text">安装LNMP</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/11/01/sOZdR4rBl9nVY8j.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">球小嘟</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 图库</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Vagrant使用</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-11-01T13:46:18.000Z" title="发表于 2020-11-01 13:46:18">2020-11-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-11-01T13:46:18.000Z" title="更新于 2020-11-01 13:46:18">2020-11-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/vagrant/">vagrant</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">711</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><blockquote>
+<p>Vagrant需要一个虚拟化平台才能工作。虽然它支持多种虚拟化平台，但是推荐VirtualBox。</p>
+</blockquote>
+<h2 id="VirtualBox"><a href="#VirtualBox" class="headerlink" title="VirtualBox"></a>VirtualBox</h2><p>在<a target="_blank" rel="noopener" href="https://www.virtualbox.org/wiki/Downloads">VirtualBox官网</a>上选择合适的下载安装即可，这里我选择的是VirtualBox 6.1.16 platform packages<a target="_blank" rel="noopener" href="https://download.virtualbox.org/virtualbox/6.1.16/VirtualBox-6.1.16-140961-Win.exe"> Windows hosts</a></p>
+<h2 id="Vagrant"><a href="#Vagrant" class="headerlink" title="Vagrant"></a>Vagrant</h2><p>在<a target="_blank" rel="noopener" href="https://www.vagrantup.com/downloads">Vagrant官网</a>上选择合适的版本下载安装即可，这里我选择的是Windows 64-bit</p>
+<p>验证是否安装成功，在bash中输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vagrant -v</span><br></pre></td></tr></table></figure>
+
+<p>有输出则代表安装成功</p>
+<h2 id="本地导入"><a href="#本地导入" class="headerlink" title="本地导入"></a>本地导入</h2><p>由于防火墙，导致直接下载慢，所以先下载.box文件，导入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fleming@DESKTOP-PNOCFH1 MINGW64 /m/virtualbox-centos7-base</span><br><span class="line">$ vagrant box add centos7 CentOS-7-x86_64-Vagrant-1905_01.VirtualBox.box</span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box <span class="string">&#x27;centos7&#x27;</span> (v0) <span class="keyword">for</span> provider:</span><br><span class="line">    box: Unpacking necessary files from: file://M:/virtualbox-centos7-base/CentOS-7-x86_64-Vagrant-1905_01.VirtualBox.box</span><br><span class="line">    box:</span><br><span class="line">The box you<span class="string">&#x27;re attempting to add already exists. Remove it before</span></span><br><span class="line"><span class="string">adding it again or add it with the `--force` flag.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Name: centos7</span></span><br><span class="line"><span class="string">Provider: virtualbox</span></span><br><span class="line"><span class="string">Version: 0</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">fleming@DESKTOP-PNOCFH1 MINGW64 /m/virtualbox-centos7-base</span></span><br><span class="line"><span class="string">$ vagrant box add centos7 CentOS-7-x86_64-Vagrant-1905_01.VirtualBox.box</span></span><br><span class="line"><span class="string">==&gt; box: Box file was not detected as metadata. Adding it directly...</span></span><br><span class="line"><span class="string">==&gt; box: Adding box &#x27;</span>centos7<span class="string">&#x27; (v0) for provider:</span></span><br><span class="line"><span class="string">    box: Unpacking necessary files from: file://M:/virtualbox-centos7-base/CentOS-7-x86_64-Vagrant-1905_01.VirtualBox.box</span></span><br><span class="line"><span class="string">    box:</span></span><br><span class="line"><span class="string">==&gt; box: Successfully added box &#x27;</span>centos7<span class="string">&#x27; (v0) for &#x27;</span>virtualbox<span class="string">&#x27;!</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">fleming@DESKTOP-PNOCFH1 MINGW64 /m/virtualbox-centos7-base</span></span><br><span class="line"><span class="string">$ vagrant init centos7</span></span><br><span class="line"><span class="string">A `Vagrantfile` has been placed in this directory. You are now</span></span><br><span class="line"><span class="string">ready to `vagrant up` your first virtual environment! Please read</span></span><br><span class="line"><span class="string">the comments in the Vagrantfile as well as documentation on</span></span><br><span class="line"><span class="string">`vagrantup.com` for more information on using Vagrant.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">fleming@DESKTOP-PNOCFH1 MINGW64 /m/virtualbox-centos7-base</span></span><br><span class="line"><span class="string">$ vagrant up</span></span><br><span class="line"><span class="string">Bringing machine &#x27;</span>default<span class="string">&#x27; up with &#x27;</span>virtualbox<span class="string">&#x27; provider...</span></span><br><span class="line"><span class="string">==&gt; default: Importing base box &#x27;</span>centos7<span class="string">&#x27;...</span></span><br><span class="line"><span class="string">==&gt; default: Matching MAC address for NAT networking...</span></span><br><span class="line"><span class="string">==&gt; default: Setting the name of the VM: virtualbox-centos7-base_default_1604218492429_90146</span></span><br><span class="line"><span class="string">==&gt; default: Clearing any previously set network interfaces...</span></span><br><span class="line"><span class="string">==&gt; default: Preparing network interfaces based on configuration...</span></span><br><span class="line"><span class="string">    default: Adapter 1: nat</span></span><br><span class="line"><span class="string">==&gt; default: Forwarding ports...</span></span><br><span class="line"><span class="string">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)</span></span><br><span class="line"><span class="string">==&gt; default: Booting VM...</span></span><br><span class="line"><span class="string">==&gt; default: Waiting for machine to boot. This may take a few minutes...</span></span><br><span class="line"><span class="string">    default: SSH address: 127.0.0.1:2222</span></span><br><span class="line"><span class="string">    default: SSH username: vagrant</span></span><br><span class="line"><span class="string">    default: SSH auth method: private key</span></span><br><span class="line"><span class="string">    default:</span></span><br><span class="line"><span class="string">    default: Vagrant insecure key detected. Vagrant will automatically replace</span></span><br><span class="line"><span class="string">    default: this with a newly generated keypair for better security.</span></span><br><span class="line"><span class="string">    default:</span></span><br><span class="line"><span class="string">    default: Inserting generated public key within guest...</span></span><br><span class="line"><span class="string">    default: Removing insecure key from the guest if it&#x27;</span>s present...</span><br><span class="line">    default: Key inserted! Disconnecting and reconnecting using new SSH key...</span><br><span class="line">==&gt; default: Machine booted and ready!</span><br><span class="line">==&gt; default: Checking <span class="keyword">for</span> guest additions <span class="keyword">in</span> VM...</span><br><span class="line">    default: No guest additions were detected on the base box <span class="keyword">for</span> this VM! Guest</span><br><span class="line">    default: additions are required <span class="keyword">for</span> forwarded ports, shared folders, host only</span><br><span class="line">    default: networking, and more. If SSH fails on this machine, please install</span><br><span class="line">    default: the guest additions and repackage the box to <span class="built_in">continue</span>.</span><br><span class="line">    default:</span><br><span class="line">    default: This is not an error message; everything may <span class="built_in">continue</span> to work properly,</span><br><span class="line">    default: <span class="keyword">in</span> <span class="built_in">which</span> <span class="keyword">case</span> you may ignore this message.</span><br><span class="line">==&gt; default: Rsyncing folder: /cygdrive/m/virtualbox-centos7-base/ =&gt; /vagrant</span><br></pre></td></tr></table></figure>
+
+<p>登录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant ssh</span><br><span class="line">[vagrant@localhost ~]$ <span class="built_in">pwd</span></span><br><span class="line">/home/vagrant</span><br></pre></td></tr></table></figure>
+
+<h2 id="挂载本地目录到Vagrant镜像"><a href="#挂载本地目录到Vagrant镜像" class="headerlink" title="挂载本地目录到Vagrant镜像"></a>挂载本地目录到Vagrant镜像</h2><p>  修改项目下的Vagrantfile文件，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">config.vm.synced_folder &quot;..&#x2F;data&quot;, &quot;&#x2F;vagrant_data&quot;</span><br></pre></td></tr></table></figure>
+
+<p>然后在本地物理机器中执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vagrant reload</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装LNMP"><a href="#安装LNMP" class="headerlink" title="安装LNMP"></a>安装LNMP</h2><p>这个功能只是按照教程安装了下，具体的不是很清楚原理，现在可以使用，后面需要的话详细的了解下。</p>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zqsb/p/10916989.html">https://www.cnblogs.com/zqsb/p/10916989.html</a></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">球小嘟</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://qiuxiaodu.github.io/posts/49ffe21d.html">http://qiuxiaodu.github.io/posts/49ffe21d.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://qiuxiaodu.github.io" target="_blank">球小嘟</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/vagrant/">vagrant</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/11/01/sOZdR4rBl9nVY8j.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/216c8ac7.html"><img class="prev-cover" src="https://i.loli.net/2020/11/05/KfF36LrnXw8sRhZ.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Win10+360随身wifi+privoxy实现多设备上网</div></div></a></div><div class="next-post pull-right"><a href="/posts/7c694ae8.html"><img class="next-cover" src="https://i.loli.net/2020/10/31/UYGiAfsbIMpvZcy.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">父与子的编程之旅：与小卡特一起学Python（第2版）</div></div></a></div></nav></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 球小嘟</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://qiuxiaodu.github.io/">blog</a>!</div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script></div></body></html>
